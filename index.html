@@ -252,6 +252,24 @@
         // After you upload videos/mvlm-demo.mp4, a small play control
         // appears on the teaser automatically. No extra paper link is added.
         demoVideo: "videos/mvlm-demo.mp4"
+      },
+      {
+        venue: "NeurIPS 2026",
+        title: "μLM: Rethinking Sub-100M Language Models through Memory-First Design",
+        authors: "Zijie Chen, Guiyun Fan, Haiming Jin",
+        publication: "The 40th Annual Conference on Neural Information Processing Systems (Accepted, December 2026)",
+        image: "images/mulm-teaser.svg",
+        paper: "papers/mulm-neurips2026.pdf",
+        demoVideo: "videos/mulm-demo.mp4"
+      },
+      {
+        venue: "MobiHoc 2026",
+        title: "Democratizing LoRa Weak Signal Demodulation",
+        authors: "Zijie Chen, Haiming Jin, Rong Ding, Ningzhi Zhu, Guiyun Fan, Kai Ying, Chenhao Ying, Dongming Shan, Cheng Wang, Lu Su, Linghe Kong",
+        publication: "The 27th International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing (Accepted, Tokyo, Japan, November 2026)",
+        image: "images/mobihoc-lora-teaser.png",
+        paper: "papers/lora-mobihoc2026.pdf",
+        demoVideo: ""
       }
       // Add more publications here when you are ready.
     ],
@@ -442,6 +460,16 @@
   }
   setupProfile();
   renderHome();
+  // A teaser that has not been uploaded yet shows a graceful placeholder.
+  // Uploading the file to its configured path makes it appear on the next page load.
+  document.querySelectorAll('.media-frame img').forEach(img => {
+    img.addEventListener('error', () => {
+      const frame = img.closest('.media-frame');
+      if (!frame) return;
+      const label = frame.closest('.publication') ? 'Teaser image pending upload' : 'Image pending upload';
+      frame.innerHTML = `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${label}</span></div></div>`;
+    }, {once: true});
+  });
   activatePublicationDemos();
   const activityId = new URLSearchParams(location.search).get('activity');
   if (activityId) {
