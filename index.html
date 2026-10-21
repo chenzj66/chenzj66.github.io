@@ -88,9 +88,8 @@
     .engineering-intro { color: #84919f; font-size: 13px; margin: -7px 0 18px; }
     .project, .research-item { display: grid; grid-template-columns: 225px minmax(0,1fr); gap: 24px; align-items: center; padding: 14px 0 20px; border-bottom: 1px solid var(--line); }
     .project:last-child, .research-item:last-child { border-bottom: 0; }
-    .project h3 { margin: 0 0 7px; font-size: 16px; line-height: 1.45; color: var(--heading); }
-    .project p { margin: 0 0 7px; color: #68798b; font-size: 13.5px; }
-    .project .subtitle { font-size: 12px; letter-spacing: .02em; color: #8492a1; }
+    .project .subtitle { margin: 0 0 5px; font-size: 16px; line-height: 1.45; font-weight: 750; letter-spacing: 0; color: var(--heading); }
+    .project .project-caption, .project .project-description { margin: 0 0 7px; color: #68798b; font-size: 13.5px; line-height: 1.65; font-weight: 400; }
     .project .media-frame { aspect-ratio: 16 / 9; }
     .project .media-frame img { object-fit: contain; background: #f7f9fb; }
     .project .paper-links { margin-top: 8px; }
@@ -197,7 +196,7 @@
    * 3. For publication demos, upload the configured MP4 to the videos folder.
    *    [paper] and [demo] appear side by side next to the paper details.
    *    Engineering demos link to videos/watch.mp4, etc.; teaser images go
-   *    in images/watch-teaser.png, etc., and appear on the left of each row.
+   *    in the images folder with the configured extension (.jpg or .png).
    * 4. The first [paper] links to the provided CVPR poster page.
    * 5. Academic activities are compact image-first items with brief text.
    * 6. Empty image/video/link fields show graceful placeholders.
@@ -337,25 +336,25 @@
       {
         title: "Watch",
         description: "",
-        image: "images/watch-teaser.png",
+        image: "images/watch-teaser.jpg",
         video: "videos/watch.mp4"
       },
       {
         title: "Car",
         description: "",
-        image: "images/car-teaser.png",
+        image: "images/car-teaser.jpg",
         video: "videos/car.mp4"
       },
       {
         title: "TV",
         description: "",
-        image: "images/tv-teaser.png",
+        image: "images/tv-teaser.jpg",
         video: "videos/tv.mp4"
       },
       {
         title: "Drone",
         description: "",
-        image: "images/drone-teaser.png",
+        image: "images/drone-teaser.jpg",
         video: "videos/drone.mp4"
       },
       {
@@ -367,7 +366,7 @@
       {
         title: "Glove",
         description: "",
-        image: "images/glove-teaser.png",
+        image: "images/glove-teaser.jpg",
         video: "videos/glove.mp4"
       }
     ]
@@ -447,9 +446,9 @@
       <article class="project">
         <div>${media(p.image, `${p.title} teaser image`)}</div>
         <div>
-          <div class="subtitle">UNDERGRADUATE ENGINEERING</div>
-          <h3>${escapeHTML(p.title)}</h3>
-          ${p.description ? `<p>${escapeHTML(p.description)}</p>` : ''}
+          <h3 class="subtitle">UNDERGRADUATE ENGINEERING</h3>
+          <p class="project-caption">${escapeHTML(p.title)}</p>
+          ${p.description ? `<p class="project-description">${escapeHTML(p.description)}</p>` : ''}
           <div class="paper-links">
             ${safeURL(p.video) ? `<a class="paper-link" href="${attr(p.video)}" target="_blank" rel="noopener noreferrer" aria-label="Watch demo for ${attr(p.title)}">[demo]</a>` : ''}
           </div>
