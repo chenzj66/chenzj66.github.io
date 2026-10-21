@@ -73,21 +73,22 @@
     .paper-links { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 6px; }
     .paper-link { font-size: 15px; font-weight: 750; }
     .paper-link.unset { color: #8e9ead; }
-    .grid-two { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 25px; }
-    .research-item h3 { margin: 13px 0 6px; color: var(--heading); font-size: 16px; line-height: 1.42; }
+    /* Academic Activities: compact, non-clickable, image-first cards. */
+    .activities-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; align-items: start; }
+    .activity-card { min-width: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+    .activity-card .media-frame { aspect-ratio: 16 / 9; border-radius: 0; }
+    .activity-card .activity-info { padding: 11px 12px 13px; }
+    .activity-card h3 { margin: 0 0 5px; font-size: 14.5px; line-height: 1.4; color: var(--heading); }
+    .activity-meta { font-size: 11.5px; color: #6e8091; line-height: 1.45; margin: 0 0 6px; }
+    .activity-desc { color: #607286; font-size: 12.5px; line-height: 1.55; margin: 0; }
+    /* Ongoing Research shares the one-row, left-image/right-text project layout. */
+    .research-item h3 { margin: 0 0 7px; color: var(--heading); font-size: 16px; line-height: 1.45; }
     .research-item p { margin: 0; color: #627184; font-size: 13.5px; line-height: 1.75; }
-    .activity-card { display: block; color: inherit; border: 1px solid var(--line); overflow: hidden; border-radius: var(--radius); transition: transform .15s ease,border-color .15s ease, box-shadow .15s ease; background: #fff; }
-    .activity-card:hover { transform: translateY(-2px); text-decoration: none; color: inherit; border-color: #c5d8eb; box-shadow: 0 8px 30px rgba(37,78,119,.07); }
-    .activity-card .activity-info { padding: 14px 16px 15px; }
-    .activity-card h3 { margin: 0 0 4px; font-size: 16px; line-height: 1.45; color: var(--heading); }
-    .activity-meta { font-size: 12.5px; color: #6e8091; margin: 0 0 6px; }
-    .activity-desc { color: #607286; font-size: 13.5px; margin: 0 0 8px; }
-    .activity-more { display: inline-flex; align-items: center; gap: 6px; color: var(--blue); font-size: 12.5px; font-weight: 750; }
     .awards-list { margin: 0; padding: 0 0 0 19px; color: #5b6d7e; font-size: 14px; }
     .awards-list li { margin-bottom: 7px; padding-left: 3px; }
     .engineering-intro { color: #84919f; font-size: 13px; margin: -7px 0 18px; }
-    .project { display: grid; grid-template-columns: 225px 1fr; gap: 24px; align-items: center; padding: 14px 0 20px; border-bottom: 1px solid var(--line); }
-    .project:last-child { border-bottom: 0; }
+    .project, .research-item { display: grid; grid-template-columns: 225px minmax(0,1fr); gap: 24px; align-items: center; padding: 14px 0 20px; border-bottom: 1px solid var(--line); }
+    .project:last-child, .research-item:last-child { border-bottom: 0; }
     .project h3 { margin: 0 0 7px; font-size: 16px; line-height: 1.45; color: var(--heading); }
     .project p { margin: 0 0 7px; color: #68798b; font-size: 13.5px; }
     .project .subtitle { font-size: 12px; letter-spacing: .02em; color: #8492a1; }
@@ -96,21 +97,6 @@
     /* Keep the existing visitor map script running offscreen; it can be shown again later. */
     .visitor-tracker { position: fixed; top: 0; left: -10000px; width: 760px; height: 450px; overflow: hidden; pointer-events: none; }
     .footer { margin-top: 66px; border-top: 1px solid var(--line); padding: 22px 0; color: #9ca8b3; font-size: 12px; text-align: center; }
-    .detail-header { margin: 0 0 25px; }
-    .back-link { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 650; margin-bottom: 23px; }
-    .detail-header h1 { margin-bottom: 8px; }
-    .detail-meta { color: #78899b; font-size: 14px; }
-    .detail-cover { aspect-ratio: 16 / 7; overflow: hidden; border-radius: 9px; background: var(--surface); }
-    .detail-cover img { width: 100%; height: 100%; object-fit: cover; }
-    .detail-cover .placeholder { height: 100%; }
-    .detail-body { max-width: 830px; padding: 27px 0 5px; color: #4f6172; font-size: 15px; line-height: 1.85; }
-    .detail-body h2 { font-size: 20px; color: var(--heading); margin: 10px 0 10px; }
-    .detail-body p { margin: 0 0 15px; }
-    .gallery-title { margin: 27px 0 16px; color: var(--heading); font-size: 21px; }
-    .gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
-    .gallery-grid figure { margin: 0; }
-    .gallery-grid .media-frame { aspect-ratio: 4 / 3; }
-    .gallery-grid figcaption { color: #7e8fa1; font-size: 12px; margin-top: 6px; }
     .template-notice { background: #f3f7fb; border: 1px solid #e3edf6; color: #55738e; border-radius: 8px; padding: 10px 14px; margin: 0 0 27px; font-size: 12px; }
     @media (max-width: 800px) {
       .header-inner { align-items: flex-start; flex-direction: column; justify-content: center; padding: 13px 0 12px; gap: 8px; }
@@ -118,7 +104,8 @@
       .main { padding-top: 35px; }
       .publication { grid-template-columns: 190px minmax(0, 1fr); gap: 20px; }
       .paper-title { font-size: 19px; }
-      .project { grid-template-columns: 200px 1fr; gap: 18px; }
+      .project, .research-item { grid-template-columns: 200px minmax(0,1fr); gap: 18px; }
+      .activities-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
       .hero { gap: 25px; grid-template-columns: 150px 1fr; }
       html { scroll-padding-top: 115px; }
     }
@@ -138,13 +125,12 @@
       .publication-media { max-width: 290px; }
       .publication .media-frame { max-width: 100%; }
       .paper-title { font-size: 19.5px; }
-      .grid-two { grid-template-columns: 1fr; gap: 25px; }
-      .project { grid-template-columns: 1fr; gap: 12px; }
-      .detail-cover { aspect-ratio: 16/10; }
-      .gallery-grid { grid-template-columns: repeat(2,1fr); }
-      .gallery-grid figure:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 50%; }
+      .activities-grid { grid-template-columns: 1fr; gap: 16px; }
+      .activity-card { max-width: 420px; }
+      .project, .research-item { grid-template-columns: 1fr; gap: 12px; }
+      .research-item .media-frame { max-width: 320px; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .activity-card { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
 <body>
@@ -181,11 +167,11 @@
       </section>
       <section id="research" class="section">
         <div class="section-header"><h2 class="section-title">Ongoing Research</h2></div>
-        <div class="grid-two" id="research-list"></div>
+        <div id="research-list"></div>
       </section>
       <section id="activities" class="section">
         <div class="section-header"><h2 class="section-title">Academic Activities</h2></div>
-        <div class="grid-two" id="activity-list"></div>
+        <div class="activities-grid" id="activity-list"></div>
       </section>
       <section id="awards" class="section">
         <div class="section-header"><h2 class="section-title">Honors &amp; Awards</h2></div>
@@ -197,7 +183,6 @@
         <div id="projects-list"></div>
       </section>
     </div>
-    <article id="detail-view" hidden></article>
     <!-- Offscreen MapMyVisitors: preserve existing widget ID and collect visitor locations without showing a map. -->
     <div id="visitor-tracker" class="visitor-tracker" aria-hidden="true">
       <script type="text/javascript" id="mapmyvisitors" src="https://mapmyvisitors.com/map.js?d=bjLYHPat-Crpol3ZdkJeI8ZaiObK7JjjAvCaqCb59EM&amp;cl=ffffff&amp;w=a&amp;t=n"></script>
@@ -213,13 +198,12 @@
    * 1. Replace text below with your real information.
    * 2. To add images: upload images to GitHub, for example images/paper1.jpg.
    *    Then write image: "images/paper1.jpg" in the relevant item.
-   * 3. This paper demo: upload videos/mvlm-demo.mp4 in this repository.
-   *    A play button on its teaser automatically appears if the file exists.
-   *    For undergraduate project videos: upload or use an MP4 URL,
-   *    then set video: "videos/demo1.mp4" in a project.
-   * 4. The first [paper] already links to the CVPR poster you provided.
-   * 5. Each academic activity automatically gets a detail page.
-   *    Replace its gallery and paragraphs to add more photos and text.
+   * 3. For publication demos, upload the configured MP4 to the videos folder.
+   *    [paper] and [demo] appear side by side next to the paper details.
+   *    For undergraduate project videos, set video: "videos/demo1.mp4".
+   * 4. The first [paper] links to the provided CVPR poster page.
+   * 5. Academic activities are compact image-first items; visitors read each
+   *    title, location, and short description directly on the homepage.
    * 6. Switch showTemplateNotice to false after filling your details.
    * 7. Empty image/video/link fields show graceful placeholders.
    * ================================================================
@@ -421,19 +405,22 @@
         </div>
       </article>`).join('');
     $('#research-list').innerHTML = DATA.research.map(r => `
-      <article class="research-item">${media(r.image,r.title)}
-        <h3>${escapeHTML(r.title)}</h3><p>${escapeHTML(r.description)}</p>
+      <article class="research-item">
+        <div>${media(r.image,r.title)}</div>
+        <div>
+          <h3>${escapeHTML(r.title)}</h3>
+          <p>${escapeHTML(r.description)}</p>
+        </div>
       </article>`).join('');
     $('#activity-list').innerHTML = DATA.activities.map(a => `
-      <a class="activity-card" href="?activity=${encodeURIComponent(a.id)}" aria-label="Read about ${attr(a.title)}">
+      <article class="activity-card">
         ${media(a.cover,a.title)}
         <div class="activity-info">
           <h3>${escapeHTML(a.title)}</h3>
           <p class="activity-meta">${escapeHTML(a.institution)} · ${escapeHTML(a.location)} · ${escapeHTML(a.year)}</p>
           <p class="activity-desc">${escapeHTML(a.short)}</p>
-          <span class="activity-more">View activity details <span aria-hidden="true">↗</span></span>
         </div>
-      </a>`).join('');
+      </article>`).join('');
     $('#awards-list').innerHTML = DATA.awards.map(a=>`<li>${escapeHTML(a)}</li>`).join('');
     $('#projects-list').innerHTML = DATA.projects.map(p => `
       <article class="project">
@@ -448,21 +435,6 @@
       </article>`).join('');
     if (!DATA.showTemplateNotice) $('#template-notice').hidden = true;
   }
-  function renderActivity(a) {
-    $('#home-view').hidden = true;
-    $('#detail-view').hidden = false;
-    document.title = `${a.title} | ${DATA.profile.name}`;
-    const gallery = (a.gallery || []).map(g => `<figure>${media(g.image,g.caption)}<figcaption>${escapeHTML(g.caption)}</figcaption></figure>`).join('');
-    $('#detail-view').innerHTML = `
-      <a class="back-link" href="./#activities">← Back to Academic Activities</a>
-      <header class="detail-header"><div class="eyebrow">Academic Activities</div><h1>${escapeHTML(a.title)}</h1>
-        <div class="detail-meta">${escapeHTML(a.institution)} · ${escapeHTML(a.location)} · ${escapeHTML(a.year)}</div></header>
-      <div class="detail-cover">${safeURL(a.cover) ? `<img src="${attr(a.cover)}" alt="${attr(a.title)}"/>` : `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>Activity Cover Photo</span></div></div>`}</div>
-      <div class="detail-body"><h2>About This Activity</h2>${(a.paragraphs || []).map(t=>`<p>${escapeHTML(t)}</p>`).join('')}</div>
-      <h2 class="gallery-title">Photo Gallery</h2>
-      <div class="gallery-grid">${gallery}</div>
-      <p style="margin-top:34px"><a class="back-link" href="./#activities">← Back to Academic Activities</a></p>`;
-  }
   setupProfile();
   renderHome();
   // A teaser that has not been uploaded yet shows a graceful placeholder.
@@ -475,12 +447,6 @@
       frame.innerHTML = `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${label}</span></div></div>`;
     }, {once: true});
   });
-  const activityId = new URLSearchParams(location.search).get('activity');
-  if (activityId) {
-    const activity = DATA.activities.find(a => a.id === activityId);
-    if (activity) renderActivity(activity);
-    else { $('#home-view').hidden = true; $('#detail-view').hidden = false; $('#detail-view').innerHTML = '<h1>Activity not found</h1><p><a href="./#activities">← Back to Academic Activities</a></p>'; }
-  }
   $('#footer').textContent = `© ${new Date().getFullYear()} ${DATA.profile.name} · Academic Homepage`;
   </script>
 </body>
