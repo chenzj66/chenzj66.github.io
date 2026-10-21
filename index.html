@@ -59,11 +59,6 @@
     .media-frame.ratio-paper { aspect-ratio: 7 / 5; }
     .publication .media-frame img { object-fit: contain; background: #f7f9fb; }
     .publication .paper-authors strong { color: #263747; font-weight: 760; }
-    .publication-media { position: relative; }
-    .paper-video-play { position: absolute; z-index: 3; right: 9px; bottom: 9px; border: 1px solid rgba(255,255,255,.86); color: #fff; background: rgba(23,39,55,.87); border-radius: 6px; padding: 7px 11px; font-size: 12px; font-weight: 750; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
-    .paper-video-play:hover { background: #174c7b; }
-    .paper-video-play[hidden] { display: none; }
-    .publication-media video { width: 100%; height: 100%; object-fit: contain; display: block; background: #101a26; }
     .media-frame.ratio-wide { aspect-ratio: 16 / 9; }
     .media-frame img { width: 100%; height: 100%; object-fit: cover; }
     .placeholder { min-height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; isolation: isolate; background: linear-gradient(135deg,#e7f0f9 0%,#f5f8fc 58%,#e8eef6 100%); color: #7897b3; text-align: center; }
@@ -75,6 +70,7 @@
     .paper-title { color: var(--heading); margin: 0 0 8px; font-size: 20.5px; letter-spacing: -.015em; font-weight: 740; line-height: 1.4; }
     .paper-authors { margin: 0 0 5px; font-size: 15px; color: #59697b; line-height: 1.55; }
     .paper-pub { margin: 0 0 8px; font-size: 14.5px; color: #6a7a8b; line-height: 1.5; }
+    .paper-links { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 6px; }
     .paper-link { font-size: 15px; font-weight: 750; }
     .paper-link.unset { color: #8e9ead; }
     .grid-two { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 25px; }
@@ -249,8 +245,7 @@
         publication: "IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2026",
         image: "images/mvlm-teaser.svg",
         paper: "https://cvpr.thecvf.com/virtual/2026/poster/40028",
-        // After you upload videos/mvlm-demo.mp4, a small play control
-        // appears on the teaser automatically. No extra paper link is added.
+        // The demo link appears beside [paper].
         demoVideo: "videos/mvlm-demo.mp4"
       },
       {
@@ -279,7 +274,7 @@
         publication: "The 31st Annual International Conference on Mobile Computing and Networking, Hong Kong, China, November 2025",
         image: "images/mobicom2025-teaser.svg",
         paper: "https://dl.acm.org/doi/10.1145/3680207.3765589",
-        // Upload this optional MP4 to enable the Watch Demo button.
+        // Demo opens the uploaded MP4 beside [paper].
         demoVideo: "videos/mobicom2025-demo.mp4"
       },
       // Publications are kept in the exact order provided by Zijie Chen (no automatic year sorting).
@@ -393,31 +388,7 @@
     }).join(', ');
   }
   function publicationMedia(p) {
-    const teaser = media(p.image,`Teaser image for ${p.title}`,'ratio-paper');
-    if (!safeURL(p.demoVideo) || !safeURL(p.image)) return teaser;
-    return `<div class="publication-media" data-video="${attr(p.demoVideo)}" data-poster="${attr(p.image)}">
-      ${teaser}
-      <button class="paper-video-play" type="button" aria-label="Play demo for ${attr(p.title)}" hidden>▶ Watch Demo</button>
-    </div>`;
-  }
-  // Only reveal the optional paper demo control when its video file exists.
-  // This keeps the live homepage clean before a video is uploaded.
-  function activatePublicationDemos() {
-    document.querySelectorAll('.publication-media[data-video]').forEach(async wrapper => {
-      const videoSrc = wrapper.getAttribute('data-video');
-      try {
-        const response = await fetch(videoSrc, { method: 'HEAD' });
-        if (!response.ok) return;
-      } catch (_) { return; }
-      const btn = wrapper.querySelector('.paper-video-play');
-      btn.hidden = false;
-      btn.addEventListener('click', () => {
-        const frame = wrapper.querySelector('.media-frame');
-        const poster = wrapper.getAttribute('data-poster');
-        frame.innerHTML = `<video controls autoplay playsinline preload="metadata" poster="${attr(poster)}" aria-label="Paper demo"><source src="${attr(videoSrc)}" type="video/mp4">Your browser does not support MP4 video.</video>`;
-        btn.remove();
-      }, {once:true});
-    });
+    return media(p.image, `Teaser image for ${p.title}`, 'ratio-paper');
   }
   function contact(label, url) { return safeURL(url) ? `<a href="${attr(url)}"${/^https?:/i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>` : `<span class="not-set">${label}</span>`; }
   function setupProfile() {
@@ -443,7 +414,10 @@
           <h3 class="paper-title">${escapeHTML(p.title)}</h3>
           <p class="paper-authors">${formatAuthors(p.authors, p.highlightAuthors)}</p>
           <p class="paper-pub">${escapeHTML(p.publication)}</p>
-          ${safeURL(p.paper) ? `<a class="paper-link" href="${attr(p.paper)}" target="_blank" rel="noopener noreferrer">[paper]</a>` : `<span class="paper-link unset">[paper — add link]</span>`}
+          <div class="paper-links">
+            ${safeURL(p.paper) ? `<a class="paper-link" href="${attr(p.paper)}" target="_blank" rel="noopener noreferrer">[paper]</a>` : `<span class="paper-link unset">[paper — add link]</span>`}
+            ${safeURL(p.demoVideo) ? `<a class="paper-link" href="${attr(p.demoVideo)}" target="_blank" rel="noopener noreferrer" aria-label="Watch demo for ${attr(p.title)}">[demo]</a>` : ''}
+          </div>
         </div>
       </article>`).join('');
     $('#research-list').innerHTML = DATA.research.map(r => `
@@ -501,7 +475,6 @@
       frame.innerHTML = `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${label}</span></div></div>`;
     }, {once: true});
   });
-  activatePublicationDemos();
   const activityId = new URLSearchParams(location.search).get('activity');
   if (activityId) {
     const activity = DATA.activities.find(a => a.id === activityId);
