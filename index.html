@@ -203,10 +203,12 @@
         <p class="engineering-intro">Undergraduate projects &amp; hands-on experience</p>
         <div id="projects-list"></div>
       </section>
-      <section id="visitors" class="section visitors-section" hidden aria-label="Global visitor locations">
+      <section id="visitors" class="section visitors-section" aria-label="Global visitor locations">
         <div class="section-header"><h2 class="section-title">Global Visitors</h2></div>
         <div class="visitor-map-wrap">
-          <div class="visitor-map-frame" id="visitor-map-frame" aria-label="World map of visitor locations"></div>
+          <div class="visitor-map-frame" id="visitor-map-frame" aria-label="World map of visitor locations">
+            <script type="text/javascript" id="mapmyvisitors" src="https://mapmyvisitors.com/map.js?d=bjLYHPat-Crpol3ZdkJeI8ZaiObK7JjjAvCaqCb59EM&amp;cl=ffffff&amp;w=a&amp;t=n"></script>
+          </div>
         </div>
       </section>
     </div>
@@ -235,10 +237,6 @@
    */
   const DATA = {
     showTemplateNotice: true,
-    // A unique MapMyVisitors URL must be generated for chenzj66.github.io.
-    // Paste only the script's src URL here. The code below always hides view counts.
-    // Example format: https://mapmyvisitors.com/map.js?d=YOUR_UNIQUE_ID&cl=ffffff&w=a&t=n
-    visitorMapSrc: "",
     profile: {
       name: "Zijie Chen",
       affiliation: "Your University · Department / Program",
@@ -463,28 +461,6 @@
     const activity = DATA.activities.find(a => a.id === activityId);
     if (activity) renderActivity(activity);
     else { $('#home-view').hidden = true; $('#detail-view').hidden = false; $('#detail-view').innerHTML = '<h1>Activity not found</h1><p><a href="./#activities">← Back to Academic Activities</a></p>'; }
-  }
-  // Display a genuine 2D visitor map only after its own site-specific tracking ID is configured.
-  // t=n disables visit-count text while keeping visitor location dots.
-  if (DATA.visitorMapSrc) {
-    try {
-      const mapURL = new URL(DATA.visitorMapSrc);
-      if (mapURL.origin === 'https://mapmyvisitors.com' &&
-          mapURL.pathname === '/map.js' &&
-          mapURL.searchParams.get('d')) {
-        mapURL.searchParams.set('t', 'n');
-        mapURL.searchParams.set('w', 'a');
-        const mapScript = document.createElement('script');
-        mapScript.id = 'mapmyvisitors';
-        mapScript.type = 'text/javascript';
-        mapScript.async = true;
-        mapScript.src = mapURL.href;
-        $('#visitor-map-frame').appendChild(mapScript);
-        $('#visitors').hidden = false;
-      }
-    } catch (e) {
-      console.warn('Visitor map configuration is invalid:', e);
-    }
   }
   $('#footer').textContent = `© ${new Date().getFullYear()} ${DATA.profile.name} · Academic Homepage`;
   </script>
