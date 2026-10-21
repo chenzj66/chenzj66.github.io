@@ -397,7 +397,7 @@
   function contact(label, url) { return safeURL(url) ? `<a href="${attr(url)}"${/^https?:/i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>` : `<span class="not-set">${label}</span>`; }
   function setupProfile() {
     const p = DATA.profile;
-    $('#brand').textContent = p.name;
+    $('#brand').textContent = `${p.name} ^_^`;
     $('#profile-name').textContent = p.name;
     $('#affiliation').textContent = p.affiliation;
     $('#bio').textContent = p.bio;
