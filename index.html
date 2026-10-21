@@ -270,6 +270,17 @@
         image: "images/mobihoc-lora-teaser.png",
         paper: "papers/lora-mobihoc2026.pdf",
         demoVideo: ""
+      },
+      {
+        venue: "MobiCom 2025",
+        title: "Full-stack On-device Learning for Heterogeneous Tiny Cameras",
+        authors: "Zijie Chen, Guiyun Fan, Haiming Jin",
+        highlightAuthors: ["Haiming Jin"],
+        publication: "The 31st Annual International Conference on Mobile Computing and Networking, Hong Kong, China, November 2025",
+        image: "images/mobicom2025-teaser.svg",
+        paper: "https://dl.acm.org/doi/10.1145/3680207.3765589",
+        // Upload this optional MP4 to enable the Watch Demo button.
+        demoVideo: "videos/mobicom2025-demo.mp4"
       }
       // Add more publications here when you are ready.
     ],
@@ -354,11 +365,12 @@
       ? `<img loading="lazy" src="${attr(src)}" alt="${attr(label)}">`
       : `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${escapeHTML(label)}</span></div></div>`}</div>`;
   }
-  function formatAuthors(authors) {
+  function formatAuthors(authors, highlightAuthors = []) {
     const me = String(DATA.profile.name || '').trim().toLowerCase();
+    const emphasis = new Set([me, ...highlightAuthors.map(name => String(name).trim().toLowerCase())]);
     return String(authors || '').split(',').map(name => {
       const safeName = escapeHTML(name.trim());
-      return name.trim().toLowerCase() === me ? `<strong>${safeName}</strong>` : safeName;
+      return emphasis.has(name.trim().toLowerCase()) ? `<strong>${safeName}</strong>` : safeName;
     }).join(', ');
   }
   function publicationMedia(p) {
@@ -410,7 +422,7 @@
         <div>
           <div class="venue">${escapeHTML(p.venue)}</div>
           <h3 class="paper-title">${escapeHTML(p.title)}</h3>
-          <p class="paper-authors">${formatAuthors(p.authors)}</p>
+          <p class="paper-authors">${formatAuthors(p.authors, p.highlightAuthors)}</p>
           <p class="paper-pub">${escapeHTML(p.publication)}</p>
           ${safeURL(p.paper) ? `<a class="paper-link" href="${attr(p.paper)}" target="_blank" rel="noopener noreferrer">[paper]</a>` : `<span class="paper-link unset">[paper — add link]</span>`}
         </div>
