@@ -40,7 +40,6 @@
     .portrait { aspect-ratio: 4 / 5; width: 100%; object-fit: cover; border-radius: var(--radius); background: var(--surface); }
     .portrait-placeholder { aspect-ratio: 4 / 5; display: grid; place-items: center; border-radius: var(--radius); border: 1px solid var(--line); background: linear-gradient(145deg,#e9f1f8,#f8fafc); color: #96a9ba; }
     .portrait-placeholder svg { width: 62px; height: 62px; }
-    .eyebrow { color: #708398; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; font-weight: 750; margin-bottom: 5px; }
     h1 { margin: 0; color: var(--heading); font-size: clamp(30px, 3.8vw, 42px); line-height: 1.2; letter-spacing: -.045em; }
     .affiliation { font-size: 15px; color: #536a80; margin: 12px 0 14px; }
     .bio { font-size: 15px; color: #3c4b5a; max-width: 800px; margin: 0 0 15px; }
@@ -92,12 +91,12 @@
     .project h3 { margin: 0 0 7px; font-size: 16px; line-height: 1.45; color: var(--heading); }
     .project p { margin: 0 0 7px; color: #68798b; font-size: 13.5px; }
     .project .subtitle { font-size: 12px; letter-spacing: .02em; color: #8492a1; }
-    .project video { width: 100%; aspect-ratio: 16/9; display: block; background: #edf2f6; border-radius: var(--radius); }
-    .video-indicator { display: flex; gap: 7px; align-items: center; color: #7b92a7; font-size: 12.5px; font-weight: 600; }
+    .project .media-frame { aspect-ratio: 16 / 9; }
+    .project .media-frame img { object-fit: contain; background: #f7f9fb; }
+    .project .paper-links { margin-top: 8px; }
     /* Keep the existing visitor map script running offscreen; it can be shown again later. */
     .visitor-tracker { position: fixed; top: 0; left: -10000px; width: 760px; height: 450px; overflow: hidden; pointer-events: none; }
     .footer { margin-top: 66px; border-top: 1px solid var(--line); padding: 22px 0; color: #9ca8b3; font-size: 12px; text-align: center; }
-    .template-notice { background: #f3f7fb; border: 1px solid #e3edf6; color: #55738e; border-radius: 8px; padding: 10px 14px; margin: 0 0 27px; font-size: 12px; }
     @media (max-width: 800px) {
       .header-inner { align-items: flex-start; flex-direction: column; justify-content: center; padding: 13px 0 12px; gap: 8px; }
       .nav { justify-content: flex-start; gap: 8px 17px; }
@@ -113,7 +112,6 @@
       .container { width: min(calc(100% - 30px), var(--width)); }
       .hero { grid-template-columns: 104px 1fr; gap: 18px; padding-bottom: 28px; }
       .hero .portrait, .hero .portrait-placeholder { width: 104px; }
-      .eyebrow { font-size: 10px; }
       .affiliation { margin-top: 8px; font-size: 13px; }
       .bio { font-size: 13.5px; }
       .contacts { gap: 6px 11px; font-size: 12.5px; }
@@ -149,11 +147,9 @@
 
   <main class="container main">
     <div id="home-view">
-      <div class="template-notice" id="template-notice">Website starter template — replace the placeholder text and images with your information before sharing this homepage.</div>
       <section id="about" class="hero" aria-label="About me">
         <div id="portrait"></div>
         <div>
-          <div class="eyebrow">Academic Homepage</div>
           <h1 id="profile-name">Your Name</h1>
           <div class="affiliation" id="affiliation"></div>
           <p class="bio" id="bio"></p>
@@ -200,16 +196,14 @@
    *    Then write image: "images/paper1.jpg" in the relevant item.
    * 3. For publication demos, upload the configured MP4 to the videos folder.
    *    [paper] and [demo] appear side by side next to the paper details.
-   *    For undergraduate project videos, set video: "videos/demo1.mp4".
+   *    Engineering demos link to videos/watch.mp4, etc.; teaser images go
+   *    in images/watch-teaser.png, etc., and appear on the left of each row.
    * 4. The first [paper] links to the provided CVPR poster page.
-   * 5. Academic activities are compact image-first items; visitors read each
-   *    title, location, and short description directly on the homepage.
-   * 6. Switch showTemplateNotice to false after filling your details.
-   * 7. Empty image/video/link fields show graceful placeholders.
+   * 5. Academic activities are compact image-first items with brief text.
+   * 6. Empty image/video/link fields show graceful placeholders.
    * ================================================================
    */
   const DATA = {
-    showTemplateNotice: true,
     profile: {
       name: "Zijie Chen",
       affiliation: "Your University · Department / Program",
@@ -336,18 +330,45 @@
       "[Year] — Your Award or Scholarship, Awarding Institution",
       "[Year] — Your Academic Honor, University or Organization"
     ],
+    // The six undergraduate projects are listed in the user's requested order.
+    // Fill in project descriptions only when actual details are available.
+    // Upload each corresponding PNG teaser to the images folder.
     projects: [
       {
-        title: "Undergraduate Engineering Project One",
-        description: "Briefly describe what you built, the engineering tools you used, and which parts you personally implemented.",
-        image: "",                     // thumbnail, e.g. "images/demo1.jpg"
-        video: ""                      // MP4, e.g. "videos/demo1.mp4"
+        title: "Watch",
+        description: "",
+        image: "images/watch-teaser.png",
+        video: "videos/watch.mp4"
       },
       {
-        title: "Undergraduate Engineering Project Two",
-        description: "Summarize your hands-on work, prototype, software system, or hardware implementation.",
-        image: "",
-        video: ""
+        title: "Car",
+        description: "",
+        image: "images/car-teaser.png",
+        video: "videos/car.mp4"
+      },
+      {
+        title: "TV",
+        description: "",
+        image: "images/tv-teaser.png",
+        video: "videos/tv.mp4"
+      },
+      {
+        title: "Drone",
+        description: "",
+        image: "images/drone-teaser.png",
+        video: "videos/drone.mp4"
+      },
+      {
+        title: "Gameboy",
+        description: "",
+        image: "images/gameboy-teaser.png",
+        video: "videos/gameboy.mp4"
+      },
+      {
+        title: "Glove",
+        description: "",
+        image: "images/glove-teaser.png",
+        video: "videos/glove.mp4"
       }
     ]
   };
@@ -382,7 +403,7 @@
     $('#affiliation').textContent = p.affiliation;
     $('#bio').textContent = p.bio;
     $('#education').textContent = p.education;
-    document.title = `${p.name} | Academic Homepage`;
+    document.title = p.name;
     $('#portrait').innerHTML = safeURL(p.portrait)
       ? `<img class="portrait" src="${attr(p.portrait)}" alt="Portrait of ${attr(p.name)}">`
       : `<div class="portrait-placeholder" aria-label="Profile photo placeholder">${imageIcon}</div>`;
@@ -424,16 +445,16 @@
     $('#awards-list').innerHTML = DATA.awards.map(a=>`<li>${escapeHTML(a)}</li>`).join('');
     $('#projects-list').innerHTML = DATA.projects.map(p => `
       <article class="project">
-        <div>${safeURL(p.video)
-          ? `<video controls preload="metadata" playsinline ${safeURL(p.image) ? `poster="${attr(p.image)}"` : ''} aria-label="Demo video for ${attr(p.title)}"><source src="${attr(p.video)}" type="video/mp4">Your browser does not support MP4 video.</video>`
-          : media(p.image,'Undergraduate Project Demo')}</div>
-        <div><div class="subtitle">UNDERGRADUATE ENGINEERING</div>
+        <div>${media(p.image, `${p.title} teaser image`)}</div>
+        <div>
+          <div class="subtitle">UNDERGRADUATE ENGINEERING</div>
           <h3>${escapeHTML(p.title)}</h3>
-          <p>${escapeHTML(p.description)}</p>
-          <div class="video-indicator">${safeURL(p.video) ? '▶ Play the demo video above' : '▶ Add an MP4 file to enable video playback'}</div>
+          ${p.description ? `<p>${escapeHTML(p.description)}</p>` : ''}
+          <div class="paper-links">
+            ${safeURL(p.video) ? `<a class="paper-link" href="${attr(p.video)}" target="_blank" rel="noopener noreferrer" aria-label="Watch demo for ${attr(p.title)}">[demo]</a>` : ''}
+          </div>
         </div>
       </article>`).join('');
-    if (!DATA.showTemplateNotice) $('#template-notice').hidden = true;
   }
   setupProfile();
   renderHome();
@@ -447,7 +468,7 @@
       frame.innerHTML = `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${label}</span></div></div>`;
     }, {once: true});
   });
-  $('#footer').textContent = `© ${new Date().getFullYear()} ${DATA.profile.name} · Academic Homepage`;
+  $('#footer').textContent = `© ${new Date().getFullYear()} ${DATA.profile.name}`;
   </script>
 </body>
 </html>
