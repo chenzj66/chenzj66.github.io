@@ -47,6 +47,7 @@
     .contacts .not-set { color: #93a0ad; cursor: default; }
     .education { padding-top: 14px; color: #6b7a8a; font-size: 13px; }
     .section { padding-top: 47px; }
+    #awards[hidden] { display: none !important; }
     .section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
     .section-title { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--heading); line-height: 1.25; font-size: clamp(21px, 2.35vw, 26px); font-weight: 750; letter-spacing: -.03em; }
     .section-title::before { content: ''; width: 4px; height: 24px; border-radius: 10px; background: var(--blue); flex: none; }
@@ -205,7 +206,8 @@
         <div class="section-header"><h2 class="section-title">Selected Academic Activities</h2></div>
         <div class="activities-grid" id="activity-list"></div>
       </section>
-      <section id="awards" class="section">
+      <!-- Honors & Awards is kept for future use; remove the hidden attribute when ready. -->
+      <section id="awards" class="section" hidden>
         <div class="section-header"><h2 class="section-title">Honors &amp; Awards</h2></div>
         <ul class="awards-list" id="awards-list"></ul>
       </section>
