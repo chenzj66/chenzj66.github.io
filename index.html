@@ -72,10 +72,23 @@
     .paper-links { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 6px; }
     .paper-link { font-size: 15px; font-weight: 750; }
     .paper-link.unset { color: #8e9ead; }
-    /* Academic Activities: compact, non-clickable, image-first cards. */
+    /* Academic Activities: independently controlled photo carousels. */
     .activities-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; align-items: start; }
     .activity-card { min-width: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
-    .activity-card .media-frame { aspect-ratio: 16 / 9; border-radius: 0; }
+    .activity-card .media-frame { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+    .activity-carousel { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #eff4f9; }
+    .activity-track { display: flex; width: 100%; height: 100%; transition: transform .28s ease; touch-action: pan-y; user-select: none; }
+    .activity-slide { flex: 0 0 100%; height: 100%; min-width: 0; }
+    .activity-slide .media-frame { width: 100%; height: 100%; }
+    .activity-carousel img { -webkit-user-drag: none; }
+    .activity-carousel-arrow { position: absolute; z-index: 1; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; color: #234a6d; background: rgba(255,255,255,.91); font-size: 26px; line-height: 1; box-shadow: 0 2px 8px rgba(24,47,69,.15); cursor: pointer; }
+    .activity-carousel-arrow.prev { left: 8px; }
+    .activity-carousel-arrow.next { right: 8px; }
+    .activity-carousel-arrow:hover { background: #fff; }
+    .activity-count { position: absolute; right: 9px; bottom: 7px; padding: 2px 7px; border-radius: 4px; background: rgba(23,42,59,.6); color: white; font-size: 10px; pointer-events: none; }
+    .activity-dots { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 9px 12px 0; }
+    .activity-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: #c5d1df; cursor: pointer; }
+    .activity-dot[aria-current="true"] { background: var(--blue); transform: scale(1.2); }
     .activity-card .activity-info { padding: 11px 12px 13px; }
     .activity-card h3 { margin: 0 0 5px; font-size: 14.5px; line-height: 1.4; color: var(--heading); }
     .activity-meta { font-size: 11.5px; color: #6e8091; line-height: 1.45; margin: 0 0 6px; }
@@ -127,7 +140,7 @@
       .project, .research-item { grid-template-columns: 1fr; gap: 12px; }
       .research-item .media-frame { max-width: 320px; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .activity-track { transition: none; } }
   </style>
 </head>
 <body>
@@ -198,7 +211,8 @@
    *    Engineering demos link to videos/watch.mp4, etc.; teaser images go
    *    in the images folder with the configured extension (.jpg or .png).
    * 4. The first [paper] links to the provided CVPR poster page.
-   * 5. Academic activities are compact image-first items with brief text.
+   * 5. Academic activities display gallery photos as a carousel. Add real
+   *    image paths to each gallery item; a separate cover appears first.
    * 6. Empty image/video/link fields show graceful placeholders.
    * ================================================================
    */
@@ -247,7 +261,6 @@
         venue: "MobiCom 2025",
         title: "Full-stack On-device Learning for Heterogeneous Tiny Cameras",
         authors: "Zijie Chen, Guiyun Fan, Haiming Jin",
-        highlightAuthors: ["Haiming Jin"],
         publication: "The 31st Annual International Conference on Mobile Computing and Networking, Hong Kong, China, November 2025",
         image: "images/mobicom2025-teaser.svg",
         paper: "https://dl.acm.org/doi/10.1145/3680207.3765589",
@@ -383,6 +396,80 @@
       ? `<img loading="lazy" src="${attr(src)}" alt="${attr(label)}">`
       : `<div class="placeholder"><div class="placeholder-content">${imageIcon}<span>${escapeHTML(label)}</span></div></div>`}</div>`;
   }
+  function activitySlides(activity) {
+  const slides = (Array.isArray(activity.gallery) ? activity.gallery : []).map((item, i) => ({
+    image: typeof item === 'string' ? item : (item?.image || ''),
+    caption: (typeof item === 'string' ? '' : item?.caption) || `${activity.title} photo ${i + 1}`
+  }));
+  const cover = safeURL(activity.cover);
+  if (cover && !slides.some(slide => safeURL(slide.image) === cover)) {
+    slides.unshift({image: cover, caption: `${activity.title} cover`});
+  }
+  return slides.length ? slides : [{image: activity.cover || '', caption: `${activity.title} photo 1`}];
+}
+  function activityCarousel(activity) {
+  const slides = activitySlides(activity);
+  const multiple = slides.length > 1;
+  return `<div class="activity-carousel" role="region" aria-roledescription="carousel" aria-label="Photos from ${attr(activity.title)}" tabindex="${multiple ? '0' : '-1'}">
+    <div class="activity-track">
+      ${slides.map((slide, i) => `<div class="activity-slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}" aria-hidden="${i !== 0}">${media(slide.image, slide.caption)}</div>`).join('')}
+    </div>
+    ${multiple ? `<button type="button" class="activity-carousel-arrow prev" data-step="-1" aria-label="Previous photo">&#8249;</button>
+    <button type="button" class="activity-carousel-arrow next" data-step="1" aria-label="Next photo">&#8250;</button>
+    <span class="activity-count" aria-live="polite">1 / ${slides.length}</span>` : ''}
+  </div>
+  ${multiple ? `<div class="activity-dots" role="group" aria-label="Choose a photo from ${attr(activity.title)}">
+    ${slides.map((_, i) => `<button type="button" class="activity-dot" data-slide="${i}" aria-label="Show photo ${i + 1} of ${slides.length}" aria-current="${i === 0}"></button>`).join('')}
+  </div>` : ''}`;
+}
+  function initActivityCarousels() {
+  document.querySelectorAll('.activity-card').forEach(card => {
+    const carousel = card.querySelector('.activity-carousel');
+    const track = carousel.querySelector('.activity-track');
+    const slides = Array.from(track.querySelectorAll('.activity-slide'));
+    if (slides.length < 2) return;
+    const dots = Array.from(card.querySelectorAll('.activity-dot'));
+    const counter = carousel.querySelector('.activity-count');
+    let current = 0;
+    const show = index => {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      slides.forEach((slide, i) => slide.setAttribute('aria-hidden', String(i !== current)));
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    };
+    carousel.querySelectorAll('[data-step]').forEach(button => {
+      button.addEventListener('click', () => show(current + Number(button.dataset.step)));
+    });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
+    carousel.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(current + (event.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
+    let startX = null;
+    let startY = null;
+    track.addEventListener('dragstart', event => event.preventDefault());
+    track.addEventListener('pointerdown', event => {
+      if (!event.isPrimary) return;
+      startX = event.clientX;
+      startY = event.clientY;
+      track.setPointerCapture(event.pointerId);
+    });
+    track.addEventListener('pointerup', event => {
+      if (startX === null) return;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      startX = null;
+      startY = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        show(current + (dx < 0 ? 1 : -1));
+      }
+    });
+    track.addEventListener('pointercancel', () => { startX = null; startY = null; });
+  });
+}
   function formatAuthors(authors, highlightAuthors = []) {
     const me = String(DATA.profile.name || '').trim().toLowerCase();
     const emphasis = new Set([me, ...highlightAuthors.map(name => String(name).trim().toLowerCase())]);
@@ -434,7 +521,7 @@
       </article>`).join('');
     $('#activity-list').innerHTML = DATA.activities.map(a => `
       <article class="activity-card">
-        ${media(a.cover,a.title)}
+        ${activityCarousel(a)}
         <div class="activity-info">
           <h3>${escapeHTML(a.title)}</h3>
           <p class="activity-meta">${escapeHTML(a.institution)} · ${escapeHTML(a.location)} · ${escapeHTML(a.year)}</p>
@@ -457,6 +544,7 @@
   }
   setupProfile();
   renderHome();
+  initActivityCarousels();
   // A teaser that has not been uploaded yet shows a graceful placeholder.
   // Uploading the file to its configured path makes it appear on the next page load.
   document.querySelectorAll('.media-frame img').forEach(img => {
