@@ -120,6 +120,7 @@
     /* Ongoing Research shares the one-row, left-image/right-text project layout. */
     .research-item h3 { margin: 0 0 7px; color: var(--heading); font-size: 16px; line-height: 1.45; }
     .research-item p { margin: 0; color: #627184; font-size: 13.5px; line-height: 1.75; }
+    .research-item .media-frame img { object-fit: contain; background: #f7f9fb; }
     .awards-list { margin: 0; padding: 0 0 0 19px; color: #5b6d7e; font-size: 14px; }
     .awards-list li { margin-bottom: 7px; padding-left: 3px; }
     .engineering-intro { color: #84919f; font-size: 13px; margin: -7px 0 18px; }
@@ -198,7 +199,7 @@
         <div id="publication-list"></div>
       </section>
       <section id="research" class="section">
-        <div class="section-header"><h2 class="section-title">Ongoing Research</h2></div>
+        <div class="section-header"><h2 class="section-title">Ongoing Projects</h2></div>
         <div id="research-list"></div>
       </section>
       <section id="activities" class="section">
@@ -329,14 +330,19 @@
     ],
     research: [
       {
-        title: "Ongoing Research Topic One",
-        description: "Describe the research question, your central idea, and the expected scientific contribution in a short paragraph. This is a self-contained description without a separate detail page.",
-        image: ""                     // e.g. "images/research1.jpg"
+        title: "Efficient Omni-model",
+        description: "Unifying audio-visual understanding, Q&A, and speech generation in a single model under 1B total parameters, approaching large Omni models overall and rivaling small expert models across individual tasks to replace them with one compact model.",
+        image: "images/ongoing-efficient-omni.svg"
       },
       {
-        title: "Ongoing Research Topic Two",
-        description: "Describe the scope and motivation of the project, including only information you are comfortable making public. Keep this summary clear for both research and industry audiences.",
-        image: ""
+        title: "Efficient VQA for wearables",
+        description: "Designing a lightweight, end-to-end VQA model tailored for low-power wearable devices, enabling robust on-device deployment and efficient real-time inference.",
+        image: "images/ongoing-wearable-vqa.svg"
+      },
+      {
+        title: "Embodied FPV Robot",
+        description: "An Embodied Robot with ultra-low-latency first-person vision, smooth FPS-style WASD and mouse controls, and dual robotic arms to explore and interact with the physical world.",
+        image: "images/ongoing-fpv-robot.svg"
       }
     ],
     activities: [
