@@ -37,15 +37,17 @@
     .nav a:hover { color: var(--blue); text-decoration: none; }
     .main { padding: 52px 0 76px; }
     .hero { display: grid; grid-template-columns: 176px 1fr; gap: 38px; align-items: start; padding-bottom: 40px; border-bottom: 1px solid var(--line); }
-    .portrait { aspect-ratio: 4 / 5; width: 100%; object-fit: cover; border-radius: var(--radius); background: var(--surface); }
+    .portrait { aspect-ratio: 540 / 832; width: 100%; object-fit: contain; border-radius: var(--radius); background: var(--surface); }
     .portrait-placeholder { aspect-ratio: 4 / 5; display: grid; place-items: center; border-radius: var(--radius); border: 1px solid var(--line); background: linear-gradient(145deg,#e9f1f8,#f8fafc); color: #96a9ba; }
     .portrait-placeholder svg { width: 62px; height: 62px; }
     h1 { margin: 0; color: var(--heading); font-size: clamp(30px, 3.8vw, 42px); line-height: 1.2; letter-spacing: -.045em; }
     .affiliation { font-size: 15px; color: #536a80; margin: 12px 0 14px; }
     .bio { font-size: 15px; color: #3c4b5a; max-width: 800px; margin: 0 0 15px; }
+    .bio p { margin: 0 0 12px; }
+    .bio p:last-child { margin-bottom: 0; }
+    .bio strong u { font-weight: 760; text-underline-offset: 2px; }
     .contacts { display: flex; align-items: center; flex-wrap: wrap; gap: 9px 16px; font-size: 14px; font-weight: 620; }
     .contacts .not-set { color: #93a0ad; cursor: default; }
-    .education { padding-top: 14px; color: #6b7a8a; font-size: 13px; }
     .section { padding-top: 47px; }
     #awards[hidden] { display: none !important; }
     .section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
@@ -156,7 +158,6 @@
       .affiliation { margin-top: 8px; font-size: 13px; }
       .bio { font-size: 13.5px; }
       .contacts { gap: 6px 11px; font-size: 12.5px; }
-      .education { font-size: 12px; }
       .section { padding-top: 34px; }
       .section-header { margin-bottom: 12px; }
       .section-title { font-size: 21px; }
@@ -199,9 +200,8 @@
         <div>
           <h1 id="profile-name">Your Name</h1>
           <div class="affiliation" id="affiliation"></div>
-          <p class="bio" id="bio"></p>
+          <div class="bio" id="bio"></div>
           <div class="contacts" id="contacts"></div>
-          <div class="education" id="education"></div>
         </div>
       </section>
       <section id="publications" class="section">
@@ -270,10 +270,12 @@
   const DATA = {
     profile: {
       name: "Zijie Chen",
-      affiliation: "Your University · Department / Program",
-      bio: "Add a brief introduction (3–5 sentences) about your research interests, academic background, and the research questions you are passionate about. Keep it concise and professional.",
-      education: "Education: [Degree], [University], [Years]",
-      portrait: "",                     // e.g. "images/profile.jpg"
+      affiliation: "Email: chenzj1@sjtu.edu.cn",
+      bioHTML: [
+        `I am currently a Ph.D. candidate at the <a href="https://www.cs.sjtu.edu.cn/en/" target="_blank" rel="noopener noreferrer">John Hopcroft Center for Computer Science</a>, <a href="https://en.sjtu.edu.cn/" target="_blank" rel="noopener noreferrer">Shanghai Jiao Tong University</a>, advised by Prof. <a href="https://www.cs.sjtu.edu.cn/~jinhaiming/" target="_blank" rel="noopener noreferrer">Haiming Jin</a>.`,
+        `My research focuses on the design and optimization of <strong><u>efficient AI models and systems</u></strong>. Specifically, I explore compact model architectures, training and inference acceleration, and hardware–software co-optimization for heterogeneous computing platforms, aiming to make generative AI more efficient and practical for ubiquitous intelligence.`
+      ],
+      portrait: "",                     // images/zijie-chen-profile-photo.svg
       email: "chenzj1@sjtu.edu.cn",
       scholar: "https://scholar.google.com/citations?user=ylj4m-8AAAAJ&hl=zh-CN",
       dblp: "https://dblp.org/pid/135/0704-6.html",
@@ -610,8 +612,7 @@
     $('#brand').textContent = `${p.name} ^_^`;
     $('#profile-name').textContent = p.name;
     $('#affiliation').textContent = p.affiliation;
-    $('#bio').textContent = p.bio;
-    $('#education').textContent = p.education;
+    $('#bio').innerHTML = p.bioHTML.map(paragraph => `<p>${paragraph}</p>`).join('');
     document.title = p.name;
     $('#portrait').innerHTML = safeURL(p.portrait)
       ? `<img class="portrait" src="${attr(p.portrait)}" alt="Portrait of ${attr(p.name)}">`
