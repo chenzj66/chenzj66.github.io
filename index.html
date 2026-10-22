@@ -127,10 +127,13 @@
     .engineering-intro { color: #84919f; font-size: 13px; margin: -7px 0 18px; }
     .project, .research-item { display: grid; grid-template-columns: 225px minmax(0,1fr); gap: 24px; align-items: center; padding: 14px 0 20px; border-bottom: 1px solid var(--line); }
     .project:last-child, .research-item:last-child { border-bottom: 0; }
-    .project .subtitle { margin: 0 0 5px; font-size: 16px; line-height: 1.45; font-weight: 750; letter-spacing: 0; color: var(--heading); }
+    /* Engineering demos: a smaller teaser and larger typography balance short project entries. */
+    .project { grid-template-columns: 175px minmax(0,1fr); gap: 22px; padding: 10px 0 14px; }
+    .project .subtitle { margin: 0 0 5px; font-size: 21px; line-height: 1.35; font-weight: 760; letter-spacing: -.015em; color: var(--heading); }
     .project .media-frame { aspect-ratio: 16 / 9; }
     .project .media-frame img { object-fit: contain; background: #f7f9fb; }
-    .project .paper-links { margin-top: 8px; }
+    .project .paper-links { margin-top: 5px; }
+    .project .paper-link { font-size: 16px; }
     /* Keep the existing visitor map script running offscreen; it can be shown again later. */
     .visitor-tracker { position: fixed; top: 0; left: -10000px; width: 760px; height: 450px; overflow: hidden; pointer-events: none; }
     .footer { margin-top: 66px; border-top: 1px solid var(--line); padding: 22px 0; color: #9ca8b3; font-size: 12px; text-align: center; }
@@ -140,7 +143,8 @@
       .main { padding-top: 35px; }
       .publication { grid-template-columns: 190px minmax(0, 1fr); gap: 20px; }
       .paper-title { font-size: 19px; }
-      .project, .research-item { grid-template-columns: 200px minmax(0,1fr); gap: 18px; }
+      .research-item { grid-template-columns: 200px minmax(0,1fr); gap: 18px; }
+      .project { grid-template-columns: 160px minmax(0,1fr); gap: 18px; }
       .activities-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
       .hero { gap: 25px; grid-template-columns: 150px 1fr; }
       html { scroll-padding-top: 115px; }
@@ -162,8 +166,14 @@
       .paper-title { font-size: 19.5px; }
       .activities-grid { grid-template-columns: 1fr; gap: 16px; }
       .activity-card { max-width: 420px; }
-      .project, .research-item { grid-template-columns: 1fr; gap: 12px; }
+      .research-item { grid-template-columns: 1fr; gap: 12px; }
       .research-item .media-frame { max-width: 320px; }
+      .project { grid-template-columns: 130px minmax(0,1fr); gap: 14px; padding: 9px 0 13px; }
+      .project .subtitle { font-size: 19px; line-height: 1.35; }
+    }
+    @media (max-width: 350px) {
+      .project { grid-template-columns: 1fr; gap: 8px; }
+      .project .media-frame { max-width: 175px; }
     }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .activity-track { transition: none; } }
   </style>
