@@ -91,8 +91,7 @@
     .activity-dot[aria-current="true"] { background: var(--blue); transform: scale(1.2); }
     .activity-card .activity-info { padding: 11px 12px 13px; }
     .activity-card h3 { margin: 0 0 5px; font-size: 14.5px; line-height: 1.4; color: var(--heading); }
-    .activity-meta { font-size: 11.5px; color: #6e8091; line-height: 1.45; margin: 0 0 6px; }
-    .activity-desc { color: #607286; font-size: 12.5px; line-height: 1.55; margin: 0; }
+    .activity-meta { font-size: 12px; color: #6e8091; line-height: 1.45; margin: 0; }
     /* Ongoing Research shares the one-row, left-image/right-text project layout. */
     .research-item h3 { margin: 0 0 7px; color: var(--heading); font-size: 16px; line-height: 1.45; }
     .research-item p { margin: 0; color: #627184; font-size: 13.5px; line-height: 1.75; }
@@ -178,7 +177,7 @@
         <div id="research-list"></div>
       </section>
       <section id="activities" class="section">
-        <div class="section-header"><h2 class="section-title">Academic Activities</h2></div>
+        <div class="section-header"><h2 class="section-title">Selected Academic Activities</h2></div>
         <div class="activities-grid" id="activity-list"></div>
       </section>
       <section id="awards" class="section">
@@ -250,7 +249,7 @@
       },
       {
         venue: "MobiHoc 2026",
-        title: "Democratizing LoRa Weak Signal Demodulation",
+        title: "Democratizing LoRa Weak Signal Demodulation with Efficient AI",
         authors: "Zijie Chen, Haiming Jin, Rong Ding, Ningzhi Zhu, Guiyun Fan, Kai Ying, Chenhao Ying, Dongming Shan, Cheng Wang, Lu Su, Linghe Kong",
         publication: "The 27th International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing (Accepted, Tokyo, Japan, November 2026)",
         image: "images/mobihoc-lora-teaser.svg",
@@ -302,39 +301,35 @@
     ],
     activities: [
       {
-        id: "academic-activity-1",
-        title: "Academic Conference / Visit One",
-        institution: "Conference or University Name",
-        location: "City, Country",
-        year: "20XX",
-        short: "A short description of the conference, academic visit, presentation, or research exchange.",
-        cover: "",                     // e.g. "images/visit1-cover.jpg"
-        paragraphs: [
-          "Describe the event or host institution, why you attended, and the nature of the academic exchange.",
-          "Describe your presentation, poster session, research discussions, or other meaningful experiences during the visit."
-        ],
+        id: "academic-denver",
+        title: "Denver, America",
+        venue: "CVPR 2026",
         gallery: [
-          { image: "", caption: "Conference / campus photo" },
-          { image: "", caption: "Presentation / poster photo" },
-          { image: "", caption: "Academic exchange photo" }
+          { image: "images/Academic%20activity/Denver/1.jpg", caption: "Denver, America — Photo 1" },
+          { image: "images/Academic%20activity/Denver/2.jpg", caption: "Denver, America — Photo 2" },
+          { image: "images/Academic%20activity/Denver/3.jpg", caption: "Denver, America — Photo 3" },
+          { image: "images/Academic%20activity/Denver/4.jpg", caption: "Denver, America — Photo 4" },
+          { image: "images/Academic%20activity/Denver/5.jpg", caption: "Denver, America — Photo 5" }
         ]
       },
       {
-        id: "academic-activity-2",
-        title: "Academic Conference / Visit Two",
-        institution: "Conference or University Name",
-        location: "City, Country",
-        year: "20XX",
-        short: "A brief overview of your participation and what this academic activity involved.",
-        cover: "",
-        paragraphs: [
-          "Write a detailed paragraph about the conference, institution, and your participation.",
-          "Add details about academic discussions, talks, poster presentations, or other relevant activities."
-        ],
+        id: "academic-hongkong",
+        title: "HongKong, China",
+        venue: "Mobicom 2025",
         gallery: [
-          { image: "", caption: "Photo 1" },
-          { image: "", caption: "Photo 2" },
-          { image: "", caption: "Photo 3" }
+          { image: "images/Academic%20activity/Hongkong/1.jpg", caption: "HongKong, China — Photo 1" },
+          { image: "images/Academic%20activity/Hongkong/2.jpg", caption: "HongKong, China — Photo 2" },
+          { image: "images/Academic%20activity/Hongkong/3.jpg", caption: "HongKong, China — Photo 3" }
+        ]
+      },
+      {
+        id: "academic-vienna",
+        title: "Vienna, Austria",
+        venue: "ISLPED 2023",
+        gallery: [
+          { image: "images/Academic%20activity/Vienna/1.jpg", caption: "Vienna, Austria — Photo 1" },
+          { image: "images/Academic%20activity/Vienna/2.jpg", caption: "Vienna, Austria — Photo 2" },
+          { image: "images/Academic%20activity/Vienna/3.jpg", caption: "Vienna, Austria — Photo 3" }
         ]
       }
     ],
@@ -524,8 +519,7 @@
         ${activityCarousel(a)}
         <div class="activity-info">
           <h3>${escapeHTML(a.title)}</h3>
-          <p class="activity-meta">${escapeHTML(a.institution)} · ${escapeHTML(a.location)} · ${escapeHTML(a.year)}</p>
-          <p class="activity-desc">${escapeHTML(a.short)}</p>
+          <p class="activity-meta">${escapeHTML(a.venue)}</p>
         </div>
       </article>`).join('');
     $('#awards-list').innerHTML = DATA.awards.map(a=>`<li>${escapeHTML(a)}</li>`).join('');
