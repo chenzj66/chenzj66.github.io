@@ -92,6 +92,31 @@
     .activity-card .activity-info { padding: 11px 12px 13px; }
     .activity-card h3 { margin: 0 0 5px; font-size: 14.5px; line-height: 1.4; color: var(--heading); }
     .activity-meta { font-size: 12px; color: #6e8091; line-height: 1.45; margin: 0; }
+
+    /* Full-screen enlarged photo viewer for academic activity galleries. */
+    .activity-track { cursor: zoom-in; }
+    .activity-lightbox { width: min(97vw, 1500px); height: 94vh; height: 94dvh; max-width: none; max-height: none; margin: auto; padding: 0; overflow: visible; border: none; color: #fff; background: transparent; }
+    .activity-lightbox::backdrop { background: rgba(9, 16, 27, .92); backdrop-filter: blur(4px); }
+    .activity-lightbox-content { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+    .activity-lightbox-figure { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin: 0; width: 100%; height: 100%; min-height: 0; touch-action: pan-y; }
+    .activity-lightbox-image { display: block; max-width: calc(100% - 100px); max-height: calc(100% - 80px); width: auto; height: auto; object-fit: contain; border-radius: 5px; box-shadow: 0 12px 35px rgba(0,0,0,.24); -webkit-user-drag: none; }
+    .activity-lightbox-footer { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 12px; color: #f0f5fb; font-size: 13px; text-align: center; }
+    .activity-lightbox-count { color: #bcccdc; font-variant-numeric: tabular-nums; }
+    .activity-lightbox-button { position: absolute; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; cursor: pointer; }
+    .activity-lightbox-button:hover { background: rgba(255,255,255,.30); }
+    .activity-lightbox-button[hidden] { display: none; }
+    .activity-lightbox-close { z-index: 2; top: 0; right: 5px; width: 40px; height: 40px; font-size: 28px; line-height: 1; }
+    .activity-lightbox-prev, .activity-lightbox-next { top: 50%; transform: translateY(-50%); width: 42px; height: 42px; font-size: 30px; line-height: 1; }
+    .activity-lightbox-prev { left: 5px; }
+    .activity-lightbox-next { right: 5px; }
+    @media (max-width: 580px) {
+      .activity-lightbox { width: 100vw; height: 92vh; height: 92dvh; }
+      .activity-lightbox-image { max-width: calc(100% - 62px); max-height: calc(100% - 70px); }
+      .activity-lightbox-prev, .activity-lightbox-next { width: 30px; height: 38px; font-size: 26px; }
+      .activity-lightbox-prev { left: 0; }
+      .activity-lightbox-next { right: 0; }
+      .activity-lightbox-close { right: 8px; top: 8px; }
+    }
     /* Ongoing Research shares the one-row, left-image/right-text project layout. */
     .research-item h3 { margin: 0 0 7px; color: var(--heading); font-size: 16px; line-height: 1.45; }
     .research-item p { margin: 0; color: #627184; font-size: 13.5px; line-height: 1.75; }
@@ -196,6 +221,21 @@
     </div>
     <footer class="footer" id="footer"></footer>
   </main>
+
+  <dialog class="activity-lightbox" id="activity-lightbox" aria-label="Enlarged academic activity photo">
+    <div class="activity-lightbox-content">
+      <button type="button" class="activity-lightbox-button activity-lightbox-close" aria-label="Close enlarged photo">&times;</button>
+      <button type="button" class="activity-lightbox-button activity-lightbox-prev" data-lightbox-step="-1" aria-label="Previous photo">&#8249;</button>
+      <figure class="activity-lightbox-figure">
+        <img class="activity-lightbox-image" id="activity-lightbox-image" alt="">
+        <figcaption class="activity-lightbox-footer">
+          <span id="activity-lightbox-caption"></span>
+          <span class="activity-lightbox-count" id="activity-lightbox-count" aria-live="polite"></span>
+        </figcaption>
+      </figure>
+      <button type="button" class="activity-lightbox-button activity-lightbox-next" data-lightbox-step="1" aria-label="Next photo">&#8250;</button>
+    </div>
+  </dialog>
 
   <script>
   /*
@@ -406,7 +446,7 @@
   const slides = activitySlides(activity);
   const multiple = slides.length > 1;
   return `<div class="activity-carousel" role="region" aria-roledescription="carousel" aria-label="Photos from ${attr(activity.title)}" tabindex="${multiple ? '0' : '-1'}">
-    <div class="activity-track">
+    <div class="activity-track" title="Click to enlarge photo">
       ${slides.map((slide, i) => `<div class="activity-slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}" aria-hidden="${i !== 0}">${media(slide.image, slide.caption)}</div>`).join('')}
     </div>
     ${multiple ? `<button type="button" class="activity-carousel-arrow prev" data-step="-1" aria-label="Previous photo">&#8249;</button>
@@ -417,12 +457,69 @@
     ${slides.map((_, i) => `<button type="button" class="activity-dot" data-slide="${i}" aria-label="Show photo ${i + 1} of ${slides.length}" aria-current="${i === 0}"></button>`).join('')}
   </div>` : ''}`;
 }
+  function setupActivityLightbox() {
+  const dialog = document.getElementById('activity-lightbox');
+  const image = document.getElementById('activity-lightbox-image');
+  const caption = document.getElementById('activity-lightbox-caption');
+  const counter = document.getElementById('activity-lightbox-count');
+  const arrows = Array.from(dialog.querySelectorAll('[data-lightbox-step]'));
+  let photos = [];
+  let current = 0;
+  const show = index => {
+    if (!photos.length) return;
+    current = (index + photos.length) % photos.length;
+    const photo = photos[current];
+    image.src = safeURL(photo.image);
+    image.alt = photo.caption;
+    caption.textContent = photo.caption;
+    counter.textContent = `${current + 1} / ${photos.length}`;
+    arrows.forEach(button => { button.hidden = photos.length < 2; });
+  };
+  arrows.forEach(button => button.addEventListener('click', () => show(current + Number(button.dataset.lightboxStep))));
+  dialog.querySelector('.activity-lightbox-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      show(current + (event.key === 'ArrowRight' ? 1 : -1));
+    }
+  });
+  image.addEventListener('dragstart', event => event.preventDefault());
+  const figure = dialog.querySelector('.activity-lightbox-figure');
+  let startX = null;
+  let startY = null;
+  figure.addEventListener('pointerdown', event => {
+    if (!event.isPrimary) return;
+    startX = event.clientX;
+    startY = event.clientY;
+    figure.setPointerCapture(event.pointerId);
+  });
+  figure.addEventListener('pointerup', event => {
+    if (startX === null) return;
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    startX = null;
+    startY = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      show(current + (dx < 0 ? 1 : -1));
+    }
+  });
+  figure.addEventListener('pointercancel', () => { startX = null; startY = null; });
+  return (activity, index = 0) => {
+    photos = activitySlides(activity).filter(photo => safeURL(photo.image));
+    if (!photos.length) return;
+    show(index);
+    if (!dialog.open) dialog.showModal();
+  };
+}
   function initActivityCarousels() {
-  document.querySelectorAll('.activity-card').forEach(card => {
+  document.querySelectorAll('.activity-card').forEach((card, activityIndex) => {
+    const activity = DATA.activities[activityIndex];
     const carousel = card.querySelector('.activity-carousel');
     const track = carousel.querySelector('.activity-track');
     const slides = Array.from(track.querySelectorAll('.activity-slide'));
-    if (slides.length < 2) return;
     const dots = Array.from(card.querySelectorAll('.activity-dot'));
     const counter = carousel.querySelector('.activity-count');
     let current = 0;
@@ -431,7 +528,7 @@
       track.style.transform = `translateX(-${current * 100}%)`;
       slides.forEach((slide, i) => slide.setAttribute('aria-hidden', String(i !== current)));
       dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
-      counter.textContent = `${current + 1} / ${slides.length}`;
+      if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
     };
     carousel.querySelectorAll('[data-step]').forEach(button => {
       button.addEventListener('click', () => show(current + Number(button.dataset.step)));
@@ -441,13 +538,18 @@
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault();
         show(current + (event.key === 'ArrowRight' ? 1 : -1));
+      } else if ((event.key === 'Enter' || event.key === ' ') && event.target === carousel) {
+        event.preventDefault();
+        if (slides[current].querySelector('img')) openActivityLightbox(activity, current);
       }
     });
     let startX = null;
     let startY = null;
+    let suppressClick = false;
     track.addEventListener('dragstart', event => event.preventDefault());
     track.addEventListener('pointerdown', event => {
       if (!event.isPrimary) return;
+      suppressClick = false;
       startX = event.clientX;
       startY = event.clientY;
       track.setPointerCapture(event.pointerId);
@@ -458,11 +560,20 @@
       const dy = event.clientY - startY;
       startX = null;
       startY = null;
+      suppressClick = Math.abs(dx) > 12 || Math.abs(dy) > 12;
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
         show(current + (dx < 0 ? 1 : -1));
       }
     });
-    track.addEventListener('pointercancel', () => { startX = null; startY = null; });
+    track.addEventListener('pointercancel', () => {
+      startX = null;
+      startY = null;
+      suppressClick = true;
+    });
+    track.addEventListener('click', () => {
+      if (suppressClick) { suppressClick = false; return; }
+      if (slides[current]?.querySelector('img')) openActivityLightbox(activity, current);
+    });
   });
 }
   function formatAuthors(authors, highlightAuthors = []) {
@@ -538,6 +649,7 @@
   }
   setupProfile();
   renderHome();
+  const openActivityLightbox = setupActivityLightbox();
   initActivityCarousels();
   // A teaser that has not been uploaded yet shows a graceful placeholder.
   // Uploading the file to its configured path makes it appear on the next page load.
